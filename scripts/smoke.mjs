@@ -1,6 +1,6 @@
 const base=`http://127.0.0.1:${process.env.API_PORT||5731}`;
 const health=await fetch(`${base}/api/health`).then(r=>r.json());if(health.status!=='ok')throw new Error('Health failed');
-const credentials=await fetch(`${base}/api/auth/demo-credentials`).then(r=>r.json());
+const credentials={email:process.env.SEED_ADMIN_EMAIL||'runtime-admin@example.com',password:process.env.DEMO_PASSWORD||'LocalDemo!2026'};
 const login=await fetch(`${base}/api/auth/login`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:credentials.email,password:credentials.password})});if(!login.ok)throw new Error(`Login failed ${login.status}`);const {token}=await login.json();const headers={authorization:`Bearer ${token}`};
 const app=await fetch(`${base}/api/app`,{headers}).then(r=>r.json());
 const dashboard=await fetch(`${base}/api/dashboard`,{headers}).then(r=>r.json());if(dashboard.totals.records<app.features.length*15)throw new Error('Dashboard record total is incomplete');
